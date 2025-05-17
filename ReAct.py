@@ -9,7 +9,9 @@ from langchain.tools import Tool
 from langchain.agents import initialize_agent
 from googlesearch import search
 from dotenv import load_dotenv
+import argparse
 load_dotenv()
+
 
 
 # load API keys; you will need to obtain these if you haven't yet
@@ -50,13 +52,24 @@ search_tool = Tool(
     func=google_search_with_content,
     description="Use this tool to search Google and extract content from top results."
 )
-
+def main():
+    parser = argparse.ArgumentParser(description='AI Code Automation Agent')
+    # parser.add_argument('file_path', help='Path to the file to modify')
+    parser.add_argument('stock_name', help='Stock name for processing')
+    args = parser.parse_args()
+    stock_name = args.stock_name
 # Initialize ReAct agent
-agent = initialize_agent(
-    tools=[search_tool], llm=llm, agent="zero-shot-react-description", verbose=True
-)
+    agent = initialize_agent(
+        tools=[search_tool], llm=llm, agent="zero-shot-react-description", verbose=True)
 
-# Example query
-response = agent.run("Analyse the stock tata motors from multiple trusted sources and provide me market sentiment to buy,sell or hold stock.")
 
-print(response)
+    # Example query
+    response = agent.run("Analyse the stock"+stock_name+"  from multiple trusted sources and provide me market sentiment to buy,sell or hold stock.")
+    
+    print(response)
+
+
+    
+
+if __name__ == "__main__":
+    main()
